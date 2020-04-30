@@ -1,5 +1,6 @@
 /**
  * @author Jeffrey Chan & Minyi Li, RMIT 2020
+ * @studentAuthor Alan Lam s3436174
  */
 package grid;
 
@@ -16,9 +17,8 @@ import java.util.ArrayList;
  * See the comments in SudokuGrid to understand what each overriden method is
  * aiming to do (and hence what you should aim for in your implementation).
  */
-public class StdSudokuGrid extends SudokuGrid
-{
-    // TODO: Add your own attributes
+public class StdSudokuGrid extends SudokuGrid {
+
     public int[][] sudokuGrid;
     ArrayList<String> sudokuList;
     int listSize;
@@ -26,10 +26,10 @@ public class StdSudokuGrid extends SudokuGrid
 
 
     public StdSudokuGrid() {
-
         super();
-        // TODO: any necessary initialisation at the constructor
         sudokuList = new ArrayList<String>();
+        listSize = 0;
+        gridDimension = 0;
     } // end of StdSudokuGrid()
 
 
@@ -38,16 +38,18 @@ public class StdSudokuGrid extends SudokuGrid
 
     @Override
     public void initGrid(String filename)
-        throws FileNotFoundException, IOException
-    {
+            throws FileNotFoundException, IOException {
         // TODO
+        // Implement reading 'list of valid symbols' - line 2 of file
+
+
         // Open file and read each line using BufferedReader
         File file = new File(filename);
         BufferedReader reader = new BufferedReader(new FileReader(file));
 
         String line = null;
         // Given that the text file follows the proper structure
-        // Assigns read line to variable line and adds to list
+        // Assigns read line to variable 'line' and adds to list
         while ((line = reader.readLine()) != null) {
             sudokuList.add(line);
         }
@@ -59,8 +61,8 @@ public class StdSudokuGrid extends SudokuGrid
         gridDimension = Integer.parseInt(sudokuList.get(0));
         // Initialise sudoku grid/array to all zeroes
         sudokuGrid = new int[gridDimension][gridDimension];
-        for(int i = 0; i != gridDimension; ++i) {
-            for(int j = 0; j != gridDimension; ++j) {
+        for (int i = 0; i != gridDimension; ++i) {
+            for (int j = 0; j != gridDimension; ++j) {
                 sudokuGrid[i][j] = 0;
             }
         }
@@ -85,29 +87,36 @@ public class StdSudokuGrid extends SudokuGrid
 
     @Override
     public void outputGrid(String filename)
-        throws FileNotFoundException, IOException
-    {
-        // TODO
+            throws FileNotFoundException, IOException {
+        // Writes string representation of SudokuGrid to filename
+        File file = new File(filename);
+        BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+
+        writer.write(toString());
+
+        writer.close();
+
     } // end of outputBoard()
 
 
     @Override
     public String toString() {
-        // TODO
-        String gridLayout = "";
+
+        StringBuilder gridLayout = new StringBuilder();
+
         for (int i = 0; i != gridDimension; ++i) {
             for (int j = 0; j != gridDimension; ++j) {
-                gridLayout += sudokuGrid[i][j];
-                if (j != gridDimension-1) {
-                    gridLayout += ",";
+                gridLayout.append(sudokuGrid[i][j]);
+                if (j != gridDimension - 1) {
+                    gridLayout.append(",");
                 }
             }
-            gridLayout += "\n";
+            gridLayout.append("\n");
+
         }
 
-        // placeholder
-//        return String.valueOf("");
-        return gridLayout;
+        return gridLayout.toString();
+
     } // end of toString()
 
 
