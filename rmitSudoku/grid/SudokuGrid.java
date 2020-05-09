@@ -62,4 +62,23 @@ public abstract class SudokuGrid
      */
     public abstract boolean validate();
 
+
+    /**
+     * Methods added to the base SudokuGrid abstract class
+     */
+
+    /**
+     * Returns the variable containing the grid layout
+     * @return the 2d array grid
+     */
+    public abstract int getGridLoc(int i, int j);
+
+    public abstract void setGridLoc(int i, int j, int num);
+
+    public abstract int[] getValidSymbolsList();
+
+    public abstract boolean validate(int i, int j, int num);
+
+    public abstract int getGridDimension();
+
 } // end of abstract class SudokuGrid

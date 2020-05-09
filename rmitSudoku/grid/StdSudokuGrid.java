@@ -23,12 +23,20 @@ public class StdSudokuGrid extends SudokuGrid {
      * - What do we fill the blank spaces with?
      * - Are we allowed to use streams?
      * - Better to assign sudoku numbers as int or char?
+     * - Are the sudoku puzzles only limited to numbers or numbers and symbols
+     */
+
+    /**
+     * Notes:
+     * i used for rows
+     * j used for columns
      */
 
     // Sudoku Grid Layout
     private int[][] sudokuGrid;
     private int gridDimension;
 
+    private int[] validSymbolsList;
     private int validSymbolsTotal;
 
     // List of initial sudoku layout instructions
@@ -43,6 +51,24 @@ public class StdSudokuGrid extends SudokuGrid {
 
     /* ********************************************************* */
 
+
+    public int[] getValidSymbolsList() {
+        return validSymbolsList;
+    }
+
+
+    public int getGridLoc(int i, int j) {
+        return sudokuGrid[i][j];
+    }
+
+    @Override
+    public void setGridLoc(int i, int j, int num) {
+        sudokuGrid[i][j] = num;
+    }
+
+    public int getGridDimension() {
+        return gridDimension;
+    }
 
     @Override
     public void initGrid(String filename)
@@ -65,8 +91,8 @@ public class StdSudokuGrid extends SudokuGrid {
         gridDimension = Integer.parseInt(sudokuList.get(0));
         // Initialise sudoku grid/array to all zeroes
         sudokuGrid = new int[gridDimension][gridDimension];
-        for (int i = 0; i != gridDimension; ++i) {
-            for (int j = 0; j != gridDimension; ++j) {
+        for (int i = 0; i < gridDimension; i++) {
+            for (int j = 0; j < gridDimension; j++) {
                 sudokuGrid[i][j] = 0;
             }
         }
@@ -74,13 +100,19 @@ public class StdSudokuGrid extends SudokuGrid {
         // Assign list of valid symbols - use stream or no stream?
         // Valid symbols individual list or total;
         String[] validSymbols = sudokuList.get(1).split(" ");
-        for (String validSymbol : validSymbols) {
-            validSymbolsTotal += Integer.parseInt(validSymbol);
+//        int length = validSymbols.length;
+        validSymbolsList = new int[gridDimension];
+        for (int i = 0; i < gridDimension; i++) {
+            validSymbolsList[i] = Integer.parseInt(validSymbols[i]);
+            validSymbolsTotal += validSymbolsList[i];
         }
+//        for (String validSymbol : validSymbols) {
+//            validSymbolsTotal += Integer.parseInt(validSymbol);
+//        }
 
 
         // Assign values read in from file
-        for (int i = 2; i != sudokuList.size(); ++i) {
+        for (int i = 2; i < sudokuList.size(); i++) {
             // Split string into coords and value
             String[] temp = sudokuList.get(i).split(" ");
             // Assign value
@@ -94,7 +126,7 @@ public class StdSudokuGrid extends SudokuGrid {
 
         }
 
-    } // end of initBoard()
+    } // end of initGrid()
 
 
     @Override
@@ -108,7 +140,7 @@ public class StdSudokuGrid extends SudokuGrid {
 
         writer.close();
 
-    } // end of outputBoard()
+    } // end of outputGrid()
 
 
     @Override
@@ -116,8 +148,8 @@ public class StdSudokuGrid extends SudokuGrid {
 
         StringBuilder gridLayout = new StringBuilder();
 
-        for (int i = 0; i != gridDimension; ++i) {
-            for (int j = 0; j != gridDimension; ++j) {
+        for (int i = 0; i < gridDimension; i++) {
+            for (int j = 0; j < gridDimension; j++) {
                 gridLayout.append(sudokuGrid[i][j]);
                 if (j != gridDimension - 1) {
                     gridLayout.append(",");
@@ -135,6 +167,7 @@ public class StdSudokuGrid extends SudokuGrid {
     @Override
     public boolean validate() {
 
+        // Main validation
         if (!oneValueConstraintCheck()) {
             return false;
         }
@@ -149,11 +182,7 @@ public class StdSudokuGrid extends SudokuGrid {
             return boxConstraintCheck();
         }
 
-//        if (!oneValueConstraintCheck() && !rowConstraintCheck()
-//                && !columnConstraintCheck() && boxConstraintCheck()) {
-//            return false;
-//        }
-//        return true;
+         // Alternative validation
 
     } // end of validate()
 
@@ -161,15 +190,15 @@ public class StdSudokuGrid extends SudokuGrid {
     // Checks for the 'One value per cell' constraint
     private boolean oneValueConstraintCheck() {
 
-        for (int i = 0; i != gridDimension ; ++i) {
-            for (int j = 0; j != gridDimension ; ++j) {
+        for (int i = 0; i < gridDimension ; i++) {
+            for (int j = 0; j < gridDimension ; j++) {
                 if (sudokuGrid[i][j] == 0) {
                     return false;
                 }
             }
         }
         return true;
-    } // end of oneValueConstraintCheck
+    } // end of oneValueConstraintCheck()
 
 
     /**
@@ -181,9 +210,9 @@ public class StdSudokuGrid extends SudokuGrid {
      */
     private boolean rowConstraintCheck() {
 
-        for (int i = 0; i != gridDimension ; ++i) {
+        for (int i = 0; i < gridDimension ; i++) {
             int sum = 0;
-            for (int j = 0; j != gridDimension; ++j) {
+            for (int j = 0; j < gridDimension; j++) {
                 sum += sudokuGrid[i][j];
             }
 //            System.out.println(sum);
@@ -192,7 +221,9 @@ public class StdSudokuGrid extends SudokuGrid {
             }
         }
         return true;
-    } // end of rowConstraint
+    } // end of rowConstraintCheck()
+
+
 
 
     /**
@@ -204,9 +235,9 @@ public class StdSudokuGrid extends SudokuGrid {
      */
     private boolean columnConstraintCheck() {
 
-        for (int j = 0; j != gridDimension ; ++j) {
+        for (int j = 0; j < gridDimension ; j++) {
             int sum = 0;
-            for (int i = 0; i != gridDimension; ++i) {
+            for (int i = 0; i < gridDimension; i++) {
                 sum += sudokuGrid[i][j];
             }
 //            System.out.println(sum);
@@ -224,15 +255,15 @@ public class StdSudokuGrid extends SudokuGrid {
 
         // defines which block to check
         for (int i = 0; i < gridDimension; i += squareRoot) {
-            for (int l = 0; l < gridDimension; l += squareRoot) {
+            for (int j = 0; j < gridDimension; j += squareRoot) {
 
                 int bounds = i + squareRoot;
                 int subGridTotal = 0;
 
                 // Iterate through each element in the block
-                for (int j = i; j < bounds; j++) {
-                    for (int k = i; k < bounds; k++) {
-                        subGridTotal += sudokuGrid[j][k];
+                for (int k = i; k < bounds; k++) {
+                    for (int l = i; l < bounds; l++) {
+                        subGridTotal += sudokuGrid[k][l];
                     }
                 } // end inner double for loop
 //                System.out.println(subGridTotal);
@@ -245,6 +276,64 @@ public class StdSudokuGrid extends SudokuGrid {
 
         return true;
     }
+
+
+    /**
+     * Alternatives for constraint validation
+     */
+
+    public boolean validate(int i, int j, int num) {
+
+        return !rowCheck(i, num) && !columnCheck(j, num) && !boxCheck(i, j, num);
+
+
+    } // end of validate(int i, int j, int num)
+
+
+    // Alternative row check
+    private boolean rowCheck(int i, int num) {
+        for (int j = 0; j < gridDimension; j++) {
+            if (sudokuGrid[i][j] == num) {
+                return true;
+            }
+
+        }
+
+        return false;
+    } // end of rowCheck()
+
+
+    // Alternative column check
+    private boolean columnCheck(int j, int num) {
+        for (int i = 0; i < gridDimension; i++) {
+            if (sudokuGrid[i][j] == num) {
+                return true;
+            }
+
+        }
+
+        return false;
+    } // end of columnCheck()
+
+
+    //Alternative box check
+    private boolean boxCheck(int rowStart, int colStart, int num) {
+        int squareRoot = (int) Math.sqrt(gridDimension);
+        int row = rowStart - rowStart%squareRoot;
+        int col = colStart - colStart%squareRoot;
+
+        for (int i = row; i < row + squareRoot ; i++) {
+            for (int j = col; j < col + squareRoot; j++) {
+                if (sudokuGrid[i][j] == num) {
+                    return true;
+                }
+
+            }
+
+        }
+
+        return false;
+    } // end of boxCheck()
 
 
 } // end of class StdSudokuGrid

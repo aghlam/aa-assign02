@@ -14,6 +14,8 @@ public class BackTrackingSolver extends StdSudokuSolver
 {
     // TODO: Add attributes as needed.
 
+    SudokuGrid stdGrid;
+
     public BackTrackingSolver() {
         // TODO: any initialisation you want to implement.
     } // end of BackTrackingSolver()
@@ -21,10 +23,34 @@ public class BackTrackingSolver extends StdSudokuSolver
 
     @Override
     public boolean solve(SudokuGrid grid) {
-        // TODO: your implementation of the backtracking solver for standard Sudoku.
 
-        // placeholder
-        return false;
+        int gridDimension = grid.getGridDimension();
+        int[] validSymbolsList = grid.getValidSymbolsList();
+
+        for (int i = 0; i < gridDimension; i++) {
+            for (int j = 0; j < gridDimension; j++) {
+                if(grid.getGridLoc(i, j) == 0) {
+                    for (int k = 0; k < gridDimension; k++) {
+                        if (grid.validate(i, j, validSymbolsList[k])) {
+                            grid.setGridLoc(i, j, validSymbolsList[k]);
+                            if (solve(grid)) {
+                                return true;
+                            } else {
+                                grid.setGridLoc(i, j, 0);
+                            }
+
+                        }
+                        
+                    }
+                    return false;
+                }
+
+            }
+            
+        }
+
+        return true;
+
     } // end of solve()
 
 } // end of class BackTrackingSolver()

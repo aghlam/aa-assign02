@@ -62,4 +62,29 @@ public class KillerSudokuGrid extends SudokuGrid
         return false;
     } // end of validate()
 
+    @Override
+    public int getGridLoc(int i, int j) {
+        return 0;
+    }
+
+    @Override
+    public void setGridLoc(int i, int j, int num) {
+
+    }
+
+    @Override
+    public int[] getValidSymbolsList() {
+        return new int[0];
+    }
+
+    @Override
+    public boolean validate(int i, int j, int num) {
+        return false;
+    }
+
+    @Override
+    public int getGridDimension() {
+        return 0;
+    }
+
 } // end of class KillerSudokuGrid
