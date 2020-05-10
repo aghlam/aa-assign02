@@ -39,9 +39,6 @@ public class StdSudokuGrid extends SudokuGrid {
     private int[] validSymbolsList;
     private int validSymbolsTotal;
 
-    // List of initial sudoku layout instructions
-    private final ArrayList<String> sudokuList = new ArrayList<>();
-
 
     public StdSudokuGrid() {
         super();
@@ -79,6 +76,9 @@ public class StdSudokuGrid extends SudokuGrid {
     @Override
     public void initGrid(String filename)
             throws FileNotFoundException, IOException {
+
+        ArrayList<String> sudokuList = new ArrayList<>();
+
 
         // Open file and read each line using BufferedReader
         File file = new File(filename);

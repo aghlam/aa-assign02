@@ -1,5 +1,6 @@
 /**
  * @author Jeffrey Chan & Minyi Li, RMIT 2020
+ * @studentAuthor Alan Lam s3436174
  */
 package grid;
 
@@ -17,7 +18,7 @@ import java.util.ArrayList;
  * aiming to do (and hence what you should aim for in your implementation).
  */
 public class KillerSudokuGrid extends SudokuGrid {
-    // TODO: Add your own attributes
+
     // Sudoku Grid Layout
     private int[][] sudokuGrid;
     private int gridDimension;
@@ -25,18 +26,17 @@ public class KillerSudokuGrid extends SudokuGrid {
     private int[] validSymbolsList;
     private int validSymbolsTotal;
 
-    private int cageNo;
 
     // List of initial sudoku layout instructions
-    private final ArrayList<String> sudokuList = new ArrayList<>();
 
-    private ArrayList<String[]> cageList = new ArrayList<String[]>();
+
+    // List to hold cage instructions
+    private final ArrayList<String[]> cageList = new ArrayList<>();
+    private int cageNo;
 
 
     public KillerSudokuGrid() {
         super();
-
-        // TODO: any necessary initialisation at the constructor
     } // end of KillerSudokuGrid()
 
 
@@ -72,6 +72,8 @@ public class KillerSudokuGrid extends SudokuGrid {
     @Override
     public void initGrid(String filename)
             throws FileNotFoundException, IOException {
+
+        ArrayList<String> sudokuList = new ArrayList<>();
 
         // Open file and read each line using BufferedReader
         File file = new File(filename);
@@ -111,14 +113,6 @@ public class KillerSudokuGrid extends SudokuGrid {
             String[] temp = sudokuList.get(i).split(" ");
             cageList.add(temp);
         }
-
-        // Test Printing
-        for (int i = 0; i < cageNo; i++) {
-            String[] temp = cageList.get(i);
-            for (int j = 0; j < temp.length; j++) {
-            }
-        }
-
 
     } // end of initBoard()
 
@@ -304,7 +298,7 @@ public class KillerSudokuGrid extends SudokuGrid {
     } // end of columnCheck()
 
 
-    //Alternative box check
+    // Alternative box check
     private boolean boxCheck(int rowStart, int colStart, int num) {
         int squareRoot = (int) Math.sqrt(gridDimension);
         int row = rowStart - rowStart % squareRoot;
@@ -324,11 +318,13 @@ public class KillerSudokuGrid extends SudokuGrid {
     } // end of boxCheck()
 
 
-    public boolean cageCheck(int row, int col, int num) {
+    //
+    private boolean cageCheck(int row, int col, int num) {
         // Cycle through all cages in list
-        for (int i = 0; i < cageNo; i++) {
+//        for (int i = 0; i < cageNo; i++) {
+        for (String[] currentCage : cageList) {
             // Get cage at i
-            String[] currentCage = cageList.get(i);
+//            String[] currentCage = cageList.get(i);
             // Get total for cage at i
             int currentCageTotal = Integer.parseInt(currentCage[0]);
             // Get number of elements in cage at i
@@ -352,11 +348,12 @@ public class KillerSudokuGrid extends SudokuGrid {
                 } else {
                     return false;
                 }
+
             }
 
         }
-        return true;
 
-    }
+        return true;
+    } // end of cageCheck()
 
 } // end of class KillerSudokuGrid

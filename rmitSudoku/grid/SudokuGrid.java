@@ -1,5 +1,6 @@
 /**
  * @author Jeffrey Chan & Minyi Li, RMIT 2020
+ * @studentAuthor Alan Lam s3436174
  */
 
  package grid;
@@ -77,8 +78,8 @@ public abstract class SudokuGrid
 
     public abstract int[] getValidSymbolsList();
 
-    public abstract boolean validate(int i, int j, int num);
-
     public abstract int getGridDimension();
+
+    public abstract boolean validate(int i, int j, int num);
 
 } // end of abstract class SudokuGrid
