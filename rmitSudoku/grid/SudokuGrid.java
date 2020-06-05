@@ -64,6 +64,7 @@ public abstract class SudokuGrid
     public abstract boolean validate();
 
 
+
     /**
      * Methods added to the base SudokuGrid abstract class
      */
@@ -80,6 +81,6 @@ public abstract class SudokuGrid
 
     public abstract int getGridDimension();
 
-    public abstract boolean validate(int i, int j, int num);
+//    public abstract boolean validate(int i, int j, int num);
 
 } // end of abstract class SudokuGrid

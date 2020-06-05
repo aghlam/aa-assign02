@@ -116,7 +116,6 @@ public class KillerSudokuGrid extends SudokuGrid {
 
     } // end of initBoard()
 
-
     @Override
     public void outputGrid(String filename)
             throws FileNotFoundException, IOException {
@@ -129,7 +128,6 @@ public class KillerSudokuGrid extends SudokuGrid {
         writer.close();
 
     } // end of outputBoard()
-
 
     @Override
     public String toString() {
@@ -150,7 +148,6 @@ public class KillerSudokuGrid extends SudokuGrid {
         return gridLayout.toString();
 
     } // end of toString()
-
 
     @Override
     public boolean validate() {
@@ -258,18 +255,18 @@ public class KillerSudokuGrid extends SudokuGrid {
     }
 
 
-    @Override
-    public boolean validate(int i, int j, int num) {
-
-//        if (!rowCheck(i, num) && !columnCheck(j, num) && !boxCheck(i, j, num)) {
-//            if (cageCheck(i, j, num)) {
-//                return true;
-//            }
-//        } return false;
-        return !rowCheck(i, num) && !columnCheck(j, num) && !boxCheck(i, j, num) && cageCheck(i, j, num);
-
-
-    } // end of validate(int i, int j, int num)
+//    @Override
+//    public boolean validate(int i, int j, int num) {
+//
+////        if (!rowCheck(i, num) && !columnCheck(j, num) && !boxCheck(i, j, num)) {
+////            if (cageCheck(i, j, num)) {
+////                return true;
+////            }
+////        } return false;
+//        return !rowCheck(i, num) && !columnCheck(j, num) && !boxCheck(i, j, num) && cageCheck(i, j, num);
+//
+//
+//    } // end of validate(int i, int j, int num)
 
 
     // Alternative row check

@@ -190,9 +190,7 @@ public class StdSudokuGrid extends SudokuGrid {
                 if (sudokuGrid[i][j] == 0) {
                     return false;
                 }
-
             }
-
         }
 
         return true;
@@ -217,7 +215,6 @@ public class StdSudokuGrid extends SudokuGrid {
             if (sum != validSymbolsTotal) {
                 return false;
             }
-
         }
 
         return true;
@@ -242,11 +239,10 @@ public class StdSudokuGrid extends SudokuGrid {
             if (sum != validSymbolsTotal) {
                 return false;
             }
-
         }
 
         return true;
-    }
+    } // end of columnConstraintCheck()
 
 
     // Checks box for unique values
@@ -270,70 +266,11 @@ public class StdSudokuGrid extends SudokuGrid {
                 if (subGridTotal != validSymbolsTotal) {
                     return false;
                 }
-
             }
-
         } // end outer double for loop
 
         return true;
-    }
-
-
-    /**
-     * Alternatives for constraint validation
-     */
-
-    public boolean validate(int i, int j, int num) {
-
-        return !rowCheck(i, num) && !columnCheck(j, num) && !boxCheck(i, j, num);
-
-    } // end of validate(int i, int j, int num)
-
-
-    // Alternative row check
-    private boolean rowCheck(int i, int num) {
-        for (int j = 0; j < gridDimension; j++) {
-            if (sudokuGrid[i][j] == num) {
-                return true;
-            }
-
-        }
-
-        return false;
-    } // end of rowCheck()
-
-
-    // Alternative column check
-    private boolean columnCheck(int j, int num) {
-        for (int i = 0; i < gridDimension; i++) {
-            if (sudokuGrid[i][j] == num) {
-                return true;
-            }
-
-        }
-
-        return false;
-    } // end of columnCheck()
-
-
-    //Alternative box check
-    private boolean boxCheck(int rowStart, int colStart, int num) {
-        int squareRoot = (int) Math.sqrt(gridDimension);
-        int row = rowStart - rowStart % squareRoot;
-        int col = colStart - colStart % squareRoot;
-
-        for (int i = row; i < row + squareRoot; i++) {
-            for (int j = col; j < col + squareRoot; j++) {
-                if (sudokuGrid[i][j] == num) {
-                    return true;
-                }
-
-            }
-
-        }
-
-        return false;
-    } // end of boxCheck()
+    } // end of boxConstraintCheck()
 
 
 } // end of class StdSudokuGrid
