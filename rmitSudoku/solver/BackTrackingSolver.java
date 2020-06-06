@@ -28,14 +28,14 @@ public class BackTrackingSolver extends StdSudokuSolver {
 
         for (int i = 0; i < gridDimension; i++) {
             for (int j = 0; j < gridDimension; j++) {
-                if (grid.getGridLoc(i, j) == 0) {
+                if (grid.getGridLoc(i, j) == -1) {
                     for (int k = 0; k < gridDimension; k++) {
-                        if (validate(i, j, validSymbolsList[k], grid)) {
+                        if (check(i, j, validSymbolsList[k], grid)) {
                             grid.setGridLoc(i, j, validSymbolsList[k]);
                             if (solve(grid)) {
                                 return true;
                             } else {
-                                grid.setGridLoc(i, j, 0);
+                                grid.setGridLoc(i, j, -1);
                             }
                         }
                     }
@@ -48,7 +48,7 @@ public class BackTrackingSolver extends StdSudokuSolver {
         return true;
     } // end of solve()
 
-    private boolean validate(int i, int j, int num, SudokuGrid sudokuGrid) {
+    private boolean check(int i, int j, int num, SudokuGrid sudokuGrid) {
 
         return !rowCheck(i, num, sudokuGrid) && !columnCheck(j, num, sudokuGrid) && !boxCheck(i, j, num, sudokuGrid);
 

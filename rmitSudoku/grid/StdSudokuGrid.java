@@ -99,7 +99,7 @@ public class StdSudokuGrid extends SudokuGrid {
         sudokuGrid = new int[gridDimension][gridDimension];
         for (int i = 0; i < gridDimension; i++) {
             for (int j = 0; j < gridDimension; j++) {
-                sudokuGrid[i][j] = 0;
+                sudokuGrid[i][j] = -1;
             }
         }
 
@@ -187,7 +187,7 @@ public class StdSudokuGrid extends SudokuGrid {
 
         for (int i = 0; i < gridDimension; i++) {
             for (int j = 0; j < gridDimension; j++) {
-                if (sudokuGrid[i][j] == 0) {
+                if (sudokuGrid[i][j] == -1) {
                     return false;
                 }
             }

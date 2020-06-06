@@ -5,6 +5,8 @@ package solver;
 
 import grid.SudokuGrid;
 
+import java.util.ArrayList;
+
 
 /**
  * Algorithm X solver for standard Sudoku.
@@ -12,6 +14,9 @@ import grid.SudokuGrid;
 public class AlgorXSolver extends StdSudokuSolver {
 
     // Exact Cover Matrix variable
+
+    private ArrayList<Integer> coverMatrix[];
+
     private int[][] exactCoverMatrix;
     private int exactCoverRows;
     private int exactCoverCols;
@@ -37,12 +42,15 @@ public class AlgorXSolver extends StdSudokuSolver {
 
         initialiseCoverMatrix();
 
-//        printOutCoverMatrix();
+        printOutCoverMatrix();
+
+
 
 
         return false;
     } // end of solve()
 
+    
     /**
      * For a sudoku of n dimension, the number of rows in the matrix will be n rows, n columns and n numbers
      * giving n*n*n number of matrix rows. For columns there are 4 separate constraints to account for:
@@ -112,9 +120,7 @@ public class AlgorXSolver extends StdSudokuSolver {
             }
         }
 
-
-
-    }
+    } // end of initialiseCoverMatrix()
 
     private int indexInCoverMatrix(int row, int col, int num) {
         return (row - 1) * gridDimension * gridDimension + (col - 1) * gridDimension + (num - 1);
