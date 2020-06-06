@@ -14,17 +14,29 @@ import grid.SudokuGrid;
 public class BackTrackingSolver extends StdSudokuSolver {
 
     private int gridDimension;
+    private int[] validSymbolsList;
 
 
     public BackTrackingSolver() {
 
     } // end of BackTrackingSolver()
 
+
     @Override
     public boolean solve(SudokuGrid grid) {
 
         gridDimension = grid.getGridDimension();
-        int[] validSymbolsList = grid.getValidSymbolsList();
+        validSymbolsList = grid.getValidSymbolsList();
+
+        return (backtrackingRecursion(grid));
+
+    } // end of solve()
+
+    /**
+     * Ideas and concepts taken from:
+     * Reference: https://medium.com/javarevisited/build-a-sudoku-solver-in-java-part-1-c308bd511481
+     */
+    private boolean backtrackingRecursion(SudokuGrid grid) {
 
         for (int i = 0; i < gridDimension; i++) {
             for (int j = 0; j < gridDimension; j++) {
@@ -32,7 +44,7 @@ public class BackTrackingSolver extends StdSudokuSolver {
                     for (int k = 0; k < gridDimension; k++) {
                         if (check(i, j, validSymbolsList[k], grid)) {
                             grid.setGridLoc(i, j, validSymbolsList[k]);
-                            if (solve(grid)) {
+                            if (backtrackingRecursion(grid)) {
                                 return true;
                             } else {
                                 grid.setGridLoc(i, j, -1);
@@ -46,7 +58,7 @@ public class BackTrackingSolver extends StdSudokuSolver {
         }
 
         return true;
-    } // end of solve()
+    }
 
     private boolean check(int i, int j, int num, SudokuGrid sudokuGrid) {
 

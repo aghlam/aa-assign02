@@ -15,21 +15,26 @@ public class AlgorXSolver extends StdSudokuSolver {
 
     // Exact Cover Matrix variable
 
-    private ArrayList<Integer> coverMatrix[];
+    private ArrayList<Integer> partialMatrix;
 
-    private int[][] exactCoverMatrix;
+    private int[][] coverMatrixTemp;
+    private int[][] coverMatrix;
+
     private int exactCoverRows;
     private int exactCoverCols;
 
 //    private int cellConstraintIndex = 0;
-    private int cellValIndex;
-    private int rowValIndex;
-    private int colValIndex;
-    private int boxValIndex;
+    private int cellConstraintIndex;
+    private int rowContraintIndex;
+    private int colConstraintIndex;
+    private int boxConstraintIndex;
 
     private int gridDimension;
 
+
     public AlgorXSolver() {
+
+        partialMatrix = new ArrayList<Integer>();
 
     } // end of AlgorXSolver()
 
@@ -45,12 +50,23 @@ public class AlgorXSolver extends StdSudokuSolver {
         printOutCoverMatrix();
 
 
-
-
         return false;
     } // end of solve()
 
-    
+    private boolean applyAlgorithmX() {
+
+        if (coverMatrixTemp[0].length == 0) {
+            return true;
+        } else {
+
+        }
+
+
+
+        return false;
+    }
+
+
     /**
      * For a sudoku of n dimension, the number of rows in the matrix will be n rows, n columns and n numbers
      * giving n*n*n number of matrix rows. For columns there are 4 separate constraints to account for:
@@ -60,32 +76,37 @@ public class AlgorXSolver extends StdSudokuSolver {
     private void initialiseCoverMatrix() {
 
         // Number of rows in the matrix
-        exactCoverRows = gridDimension * gridDimension * gridDimension;
-        exactCoverCols = gridDimension * gridDimension * 4;
+        exactCoverRows = (gridDimension * gridDimension * gridDimension);
+        exactCoverCols = (gridDimension * gridDimension * 4);
 
-        exactCoverMatrix = new int[exactCoverRows][exactCoverCols];
+        coverMatrixTemp = new int[exactCoverRows][exactCoverCols];
 
-        cellValIndex = 0;
-        rowValIndex = gridDimension * gridDimension;
-        colValIndex = rowValIndex + (gridDimension * gridDimension);
-        boxValIndex = colValIndex + (gridDimension * gridDimension);
+//        coverMatrix[0][0] = 1;
+//        System.out.println(coverMatrix[0][0]);
+
+//
+
+        cellConstraintIndex = 0;
+        rowContraintIndex = gridDimension * gridDimension;
+        colConstraintIndex = rowContraintIndex + (gridDimension * gridDimension);
+        boxConstraintIndex = colConstraintIndex + (gridDimension * gridDimension);
 
 
         // Fill cell constraints with 1 where applicable
         int cellValue = 0;
-        int rowValue = rowValIndex;
-        int colValue = colValIndex;
-        int boxValue = boxValIndex;
+        int rowValue = rowContraintIndex;
+        int colValue = colConstraintIndex;
+        int boxValue = boxConstraintIndex;
 
         for (int i = 0; i < exactCoverRows ; i++) {
             // Cell constraints
-            exactCoverMatrix[i][cellValue] = 1;
+            coverMatrixTemp[i][cellValue] = 1;
             if ((i + 1)%gridDimension == 0) {
                 cellValue++;
             }
 
             // Row constraints
-            exactCoverMatrix[i][rowValue] = 1;
+            coverMatrixTemp[i][rowValue] = 1;
             rowValue++;
             if ((rowValue)%gridDimension == 0) {
                 rowValue = rowValue - gridDimension;
@@ -95,10 +116,10 @@ public class AlgorXSolver extends StdSudokuSolver {
             }
 
             // Col constraints
-            exactCoverMatrix[i][colValue] = 1;
+            coverMatrixTemp[i][colValue] = 1;
             colValue++;
             if ((i + 1)%(gridDimension * gridDimension) == 0) {
-                colValue = colValIndex;
+                colValue = colConstraintIndex;
             }
 
         }
@@ -113,12 +134,32 @@ public class AlgorXSolver extends StdSudokuSolver {
                     for (int rowDelta = 0; rowDelta < boxSize; rowDelta++) {
                         for (int colDelta = 0; colDelta < boxSize; colDelta++) {
                             int index = indexInCoverMatrix(row+rowDelta, col + colDelta, n);
-                            exactCoverMatrix[index][boxValue] = 1;
+                            coverMatrixTemp[index][boxValue] = 1;
                         }
                     }
                 }
             }
         }
+
+        // Convert to matrix with coords
+        coverMatrix = new int[exactCoverRows+1][exactCoverCols+1];
+
+        for (int j = 1; j < exactCoverCols+1 ; j++) {
+            coverMatrix[0][j] = j;
+        }
+        for (int i = 0; i < exactCoverRows+1; i++) {
+            coverMatrix[i][0] = i;
+        }
+
+        for (int i = 0; i < exactCoverRows; i++) {
+            for (int j = 0; j < exactCoverCols; j++) {
+                coverMatrix[i+1][j+1] = coverMatrixTemp[i][j];
+
+            }
+            
+        }
+
+
 
     } // end of initialiseCoverMatrix()
 
@@ -132,13 +173,13 @@ public class AlgorXSolver extends StdSudokuSolver {
 
         for (int i = 0; i < exactCoverRows; i++) {
             for (int j = 0; j < exactCoverCols; j++) {
-                if(exactCoverMatrix[i][j] != 0) {
+                if(coverMatrixTemp[i][j] != 0) {
 
-                    matrix.append(exactCoverMatrix[i][j]);
+                    matrix.append(coverMatrixTemp[i][j]);
                     matrix.append(" ");
 
                 } else {
-                    matrix.append("  ");
+                    matrix.append("0 ");
 
                 }
             }
@@ -147,6 +188,28 @@ public class AlgorXSolver extends StdSudokuSolver {
         }
 
         System.out.println(matrix.toString());
+
+    // -----------------------------------------------
+
+        StringBuilder matrixNew = new StringBuilder();
+
+        for (int i = 0; i < exactCoverRows+1; i++) {
+            for (int j = 0; j < exactCoverCols+1; j++) {
+                if(coverMatrix[i][j] != 0) {
+
+                    matrixNew.append(coverMatrix[i][j]);
+                    matrixNew.append(" ");
+
+                } else {
+                    matrixNew.append("  ");
+
+                }
+            }
+            matrixNew.append("\n");
+
+        }
+
+        System.out.println(matrixNew.toString());
     }
 
 
