@@ -1,0 +1,12 @@
+
+
+1. If the matrix A has no columns, the current partial solution
+   is a valid solution; terminate successfully.
+2. Otherwise, choose a column c (deterministically).
+3. Choose a row r such that A[r] = 1 (nondeterministically).
+4. Include row r in the partial solution.
+5. For each column j such that A[r][j] = 1,
+        for each row i such that A[i][j] = 1,
+            delete row i from matrix A.
+      delete column j from matrix A.
+6. Repeat this algorithm recursively on the reduced matrix A.

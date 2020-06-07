@@ -18,7 +18,7 @@ import java.util.ArrayList;
  */
 public class StdSudokuGrid extends SudokuGrid {
 
-    /**
+    /*
      * Notes/Questions:
      * - What do we fill the blank spaces with?
      * - Are we allowed to use streams?
@@ -26,7 +26,7 @@ public class StdSudokuGrid extends SudokuGrid {
      * - Are the sudoku puzzles only limited to numbers or numbers and symbols
      */
 
-    /**
+    /*
      * Notes:
      * i used for rows
      * j used for columns
@@ -69,6 +69,12 @@ public class StdSudokuGrid extends SudokuGrid {
     @Override
     public int getGridDimension() {
         return gridDimension;
+    }
+
+    // Not used for standard sudoku
+    @Override
+    public ArrayList<String[]> getCageList() {
+        return null;
     }
 
     /* ********************************************************* */
@@ -184,6 +190,8 @@ public class StdSudokuGrid extends SudokuGrid {
 
     // Checks for the 'One value per cell' constraint
     private boolean oneValueConstraintCheck() {
+
+//    validSymbolsList.
 
         for (int i = 0; i < gridDimension; i++) {
             for (int j = 0; j < gridDimension; j++) {
