@@ -27,16 +27,16 @@ public class KillerSudokuGrid extends SudokuGrid {
     private int validSymbolsTotal;
 
 
-    // List of initial sudoku layout instructions
-
-
     // List to hold cage instructions
-    private final ArrayList<String[]> cageList = new ArrayList<>();
+    private final ArrayList<String[]> cageList;
     private int cageNo;
 
 
     public KillerSudokuGrid() {
         super();
+
+        cageList = new ArrayList<>();
+
     } // end of KillerSudokuGrid()
 
 
@@ -66,6 +66,11 @@ public class KillerSudokuGrid extends SudokuGrid {
         return gridDimension;
     }
 
+    @Override
+    public ArrayList<String[]> getCageList() {
+        return cageList;
+    }
+
     /* ********************************************************* */
 
 
@@ -92,11 +97,11 @@ public class KillerSudokuGrid extends SudokuGrid {
         gridDimension = Integer.parseInt(sudokuList.get(0));
         // Initialise sudoku grid/array to all zeroes
         sudokuGrid = new int[gridDimension][gridDimension];
-        for (int i = 0; i < gridDimension; i++) {
-            for (int j = 0; j < gridDimension; j++) {
-                sudokuGrid[i][j] = 0;
-            }
-        }
+//        for (int i = 0; i < gridDimension; i++) {
+//            for (int j = 0; j < gridDimension; j++) {
+//                sudokuGrid[i][j] = 0;
+//            }
+//        }
 
         // Assign list of valid symbols
         String[] validSymbols = sudokuList.get(1).split(" ");
@@ -254,103 +259,5 @@ public class KillerSudokuGrid extends SudokuGrid {
         return true;
     }
 
-
-//    @Override
-//    public boolean validate(int i, int j, int num) {
-//
-////        if (!rowCheck(i, num) && !columnCheck(j, num) && !boxCheck(i, j, num)) {
-////            if (cageCheck(i, j, num)) {
-////                return true;
-////            }
-////        } return false;
-//        return !rowCheck(i, num) && !columnCheck(j, num) && !boxCheck(i, j, num) && cageCheck(i, j, num);
-//
-//
-//    } // end of validate(int i, int j, int num)
-
-
-    // Alternative row check
-    private boolean rowCheck(int i, int num) {
-        for (int j = 0; j < gridDimension; j++) {
-            if (sudokuGrid[i][j] == num) {
-                return true;
-            }
-
-        }
-
-        return false;
-    } // end of rowCheck()
-
-
-    // Alternative column check
-    private boolean columnCheck(int j, int num) {
-        for (int i = 0; i < gridDimension; i++) {
-            if (sudokuGrid[i][j] == num) {
-                return true;
-            }
-
-        }
-
-        return false;
-    } // end of columnCheck()
-
-
-    // Alternative box check
-    private boolean boxCheck(int rowStart, int colStart, int num) {
-        int squareRoot = (int) Math.sqrt(gridDimension);
-        int row = rowStart - rowStart % squareRoot;
-        int col = colStart - colStart % squareRoot;
-
-        for (int i = row; i < row + squareRoot; i++) {
-            for (int j = col; j < col + squareRoot; j++) {
-                if (sudokuGrid[i][j] == num) {
-                    return true;
-                }
-
-            }
-
-        }
-
-        return false;
-    } // end of boxCheck()
-
-
-    //
-    private boolean cageCheck(int row, int col, int num) {
-        // Cycle through all cages in list
-//        for (int i = 0; i < cageNo; i++) {
-        for (String[] currentCage : cageList) {
-            // Get cage at i
-//            String[] currentCage = cageList.get(i);
-            // Get total for cage at i
-            int currentCageTotal = Integer.parseInt(currentCage[0]);
-            // Get number of elements in cage at i
-            int currentCageLength = currentCage.length;
-            /**
-             * Obtain the coords of the last element in cage at i
-             * Given that the input file is structured in the correct format, the last
-             * element in the cage will the the last coordinate to be filled which will
-             * complete the cage numbers
-             */
-            String[] coords = currentCage[currentCageLength - 1].split(",");
-            // Check if coords match current ones
-            if ((Integer.parseInt(coords[0]) == row) && (Integer.parseInt(coords[1]) == col)) {
-                int coordsTotal = num;
-                for (int j = 1; j < currentCageLength; j++) {
-                    String[] tempCoords = currentCage[j].split(",");
-                    coordsTotal += getGridLoc(Integer.parseInt(tempCoords[0]), Integer.parseInt(tempCoords[1]));
-                }
-                if (coordsTotal == currentCageTotal) {
-                    return true;
-                } else {
-                    return false;
-                }
-
-            }
-
-        }
-
-        return true;
-    } // end of cageCheck()
 
 } // end of class KillerSudokuGrid

@@ -2,33 +2,31 @@
  * @author Jeffrey Chan & Minyi Li, RMIT 2020
  * @studentAuthor Alan Lam s3436174
  */
+package grid;
 
- package grid;
-
- import java.io.*;
+import java.io.*;
+import java.util.ArrayList;
 
 
 /**
  * Abstract class representing the general interface for a Sudoku grid.
  * Both standard and Killer Sudoku extend from this abstract class.
  */
-public abstract class SudokuGrid
-{
+public abstract class SudokuGrid {
 
     /**
      * Load the specified file and construct an initial grid from the contents
      * of the file.  See assignment specifications and sampleGames to see
      * more details about the format of the input files.
      *
-     * @param filename Filename of the file containing the intial configuration
-     *                  of the grid we will solve.
-     *
+     * @param filename Filename of the file containing the initial configuration
+     *                 of the grid we will solve.
      * @throws FileNotFoundException If filename is not found.
-     * @throws IOException If there are some IO exceptions when openning or closing
-     *                  the files.
+     * @throws IOException           If there are some IO exceptions when opening or closing
+     *                               the files.
      */
     public abstract void initGrid(String filename)
-        throws FileNotFoundException, IOException;
+            throws FileNotFoundException, IOException;
 
 
     /**
@@ -36,13 +34,12 @@ public abstract class SudokuGrid
      * in order for your assignment to be evaluated by our testing.
      *
      * @param filename Name of file to write output to.
-     *
      * @throws FileNotFoundException If filename is not found.
-     * @throws IOException If there are some IO exceptions when openning or closing
-     *                  the files.
+     * @throws IOException           If there are some IO exceptions when openning or closing
+     *                               the files.
      */
     public abstract void outputGrid(String filename)
-        throws FileNotFoundException, IOException;
+            throws FileNotFoundException, IOException;
 
 
     /**
@@ -65,12 +62,13 @@ public abstract class SudokuGrid
 
 
 
-    /**
+    /*
      * Methods added to the base SudokuGrid abstract class
      */
 
     /**
      * Returns the variable containing the grid layout
+     *
      * @return the 2d array grid
      */
     public abstract int getGridLoc(int i, int j);
@@ -82,5 +80,8 @@ public abstract class SudokuGrid
     public abstract int getGridDimension();
 
 //    public abstract boolean validate(int i, int j, int num);
+
+    // For Killer Sudoku
+    public abstract ArrayList<String[]> getCageList();
 
 } // end of abstract class SudokuGrid
