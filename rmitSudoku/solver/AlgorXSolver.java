@@ -13,168 +13,152 @@ import java.util.ArrayList;
  */
 public class AlgorXSolver extends StdSudokuSolver {
 
-    // Exact Cover Matrix variable
-
     private final ArrayList<Integer> solution;
     private ArrayList<String> sudokuList;
 
-    private int[][] coverMatrix;
-    private int[][] masterCoverMatrix;
-//    private int[][] coverMatrixCopy;
-
-    private int exactCoverRows;
-    private int exactCoverCols;
-
-//    private int cellConstraintIndex = 0;
-    private int cellConstraintIndex;
-    private int rowContraintIndex;
-    private int colConstraintIndex;
-    private int boxConstraintIndex;
-
     private int gridDimension;
 
-
+    /**
+     * Constructor
+     */
     public AlgorXSolver() {
 
-//        partialMatrix = new ArrayList<Integer>();
         solution = new ArrayList<>();
         sudokuList = new ArrayList<>();
 
     } // end of AlgorXSolver()
 
-
+    /**
+     * Initialises exact cover matrix from sudoku grid and then solves it
+     *
+     * @param grid Input grid to solve.  The solver will write the solution to grid.
+     * @return true if solved
+     */
     @Override
     public boolean solve(SudokuGrid grid) {
 
-        // Initialise exact cover matrix
         this.gridDimension = grid.getGridDimension();
         this.sudokuList = grid.getSudokuList();
 
-//        for (String string : sudokuList) {
-//            System.out.println(string);
-//        }
+        // Initialise exact cover matrix for the sudoku grid size
+        int[][] coverMatrix = initialiseCoverMatrix();
 
-        masterCoverMatrix = initialiseCoverMatrix();
+        /*
+         * Three methods are called here
+         * Apply the values of the initial grid and remove the corresponding rows from the exact cover matrix
+         * Apply Algorithm X on the matrix
+         * Apply solution to the sudoku grid
+         * Return true if successful
+         */
+        if (applyAlgorithmX(applyInitialGrid(grid, coverMatrix))) {
+            return applySolution(grid);
+        }
 
-        coverMatrix =  applyInitialGrid(grid, masterCoverMatrix);
+        return false;
 
-//        coverMatrix = masterCoverMatrix;
-
-
-
-        // testing - delete after
-//        printMatrix(coverMatrixTemp);
-//        System.out.println();
-//        printMatrix(coverMatrix);
-
-        // KEEP THIS
-        boolean temp = applyAlgorithmX(coverMatrix);
-
-        // Testing - delete after
-//        for (int num : solution) {
-//            System.out.print(num + " ");
-//        }
-//        System.out.println();
-
-        return applySolution(grid);
-
-
-//        return false;
     } // end of solve()
 
+    /**
+     * Solves the sudoku grid by using the rows found from the exact cover matrix
+     *
+     * @param sudokuGrid the sudoku grid to be solved
+     * @return true if sudoku grid successfully solved
+     */
     private boolean applySolution(SudokuGrid sudokuGrid) {
 
-        // Coordinates of the solution
+        // List of valid symbols
+        int[] symbolsList = sudokuGrid.getValidSymbolsList();
+        // List to hold the coordinates of the solution
         ArrayList<int[]> solutionCoords = new ArrayList<>();
-        int counter = 0;
 
-        // Setup for columns
-        int[] colLocationList = new int[gridDimension*gridDimension];
+
+        // Setup for columns - Spacing the columns into appropriate coords
+        int[] colLocationList = new int[gridDimension * gridDimension];
         int location = 0;
 
         for (int i = 1; i <= colLocationList.length; i++) {
-            colLocationList[i-1] = location;
-            if (i%gridDimension == 0) {
+            colLocationList[i - 1] = location;
+            if (i % gridDimension == 0) {
                 location++;
             }
         }
 
-
+        // Find the correct row, col coordinates of the grid from the row saved from matrix
         for (int row : solution) {
 
             int[] coords = new int[3];
 
-            // Get row index
+            // Get row index - each corresponding row is spaced by blocks of gridDimension^2
+            // The correct row coords is found by find by matching the matrix row to the correct block of rows
             for (int i = 1; i <= gridDimension; i++) {
                 if (row <= i * gridDimension * gridDimension) {
-                    coords[0] = i-1;
-                    counter++;
+                    coords[0] = i - 1;
                     break;
                 }
             }
 
-            // Get col index
-            if(row%(gridDimension*gridDimension) == 0) {
+            // Get col index - using the array setup above, matches the row mod gridDimension^2 to the correct index
+            if (row % (gridDimension * gridDimension) == 0) {
                 coords[1] = gridDimension - 1;
             } else {
-                coords[1] = colLocationList[row%(gridDimension*gridDimension)-1];
-
+                coords[1] = colLocationList[row % (gridDimension * gridDimension) - 1];
             }
 
-            // Get value
-            if (row%gridDimension == 0) {
-                coords[2] = gridDimension;
+            // Get index of value - simply row mod gridDimension - then apply corresponding symbols
+            if (row % gridDimension == 0) {
+                coords[2] = symbolsList[gridDimension - 1];
             } else {
-                coords[2] = row%gridDimension;
+                coords[2] = symbolsList[row % gridDimension - 1];
             }
-
 
             solutionCoords.add(coords);
 
         }
 
         try {
+            // Apply coordinates onto sudoku grid for solution
             for (int[] coords : solutionCoords) {
-                System.out.println(coords[0] + "," + coords[1] + " " + coords[2]);
                 sudokuGrid.setGridLoc(coords[0], coords[1], coords[2]);
             }
+
         } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
 
         return true;
-    }
 
+    } // end of applySolution()
+
+    /**
+     * Uses the input file from sudoku grid - applies the given coordinates of the grid to the exact cover matrix
+     *
+     * @param sudokuGrid grid to be solved - used to obtain the symbols
+     * @param matrix     exact cover matrix the initial grid values will be applied to
+     * @return exact cover matrix with rows /cols removed
+     */
     private int[][] applyInitialGrid(SudokuGrid sudokuGrid, int[][] matrix) {
 
         int[] symbolsList = sudokuGrid.getValidSymbolsList();
         int[][] newMatrix = matrix;
 
-//        printMatrix(coverMatrix);
-
         for (int i = 2; i < sudokuList.size(); i++) {
-//        for (int i = 2; i < 4; i++) {
             // Split string into coords and value
             String[] temp = sudokuList.get(i).split(" ");
             // Assign value
             int value = 1 + checkSymbolLocation(symbolsList, Integer.parseInt(temp[1]));
-            System.out.println("Value: " + value);
             // Split coords string into two separate values using "," and parse as int
             String[] coords = temp[0].split(",");
 
-            // Calculate row in cover matrix according to coordinates and value
-            int rowIndex = (Integer.parseInt(coords[0])*gridDimension*gridDimension) + (Integer.parseInt(coords[1])*gridDimension) + value;
+            // Calculate row in cover matrix according to coordinates and value - took me a long time to figure this out!
+            int rowIndex = (Integer.parseInt(coords[0]) * gridDimension * gridDimension) + (Integer.parseInt(coords[1]) * gridDimension) + value;
 
-//            System.out.println("Index row number: " + rowIndex);
-
-//            System.out.println(matrix[rowIndex][0]);
-
+            // Add corresponding row to solutions
             solution.add(matrix[rowIndex][0]);
-
 
         }
 
+        // Remove rows/cols from matrix
         for (int num : solution) {
             for (int i = 0; i < newMatrix.length; i++) {
                 if (num == newMatrix[i][0]) {
@@ -183,24 +167,17 @@ public class AlgorXSolver extends StdSudokuSolver {
             }
         }
 
-//        printMatrix(newMatrix);
-
         return newMatrix;
 
+    } // end of applyInitialGrid()
 
-        // Testing - delete after
-//        String[] coords = new String[2];
-//        coords[0] = "3";
-//        coords[1] = "3";
-//        int value = 4;
-//
-//        int row = (Integer.parseInt(coords[0])*gridDimension*gridDimension) + (Integer.parseInt(coords[1])*gridDimension) + value;
-//
-//        System.out.println("Index row number: " + row);
-//        System.out.println(coverMatrix[3][0]);
-//
-    }
-
+    /**
+     * Looks for the index of the symbol in the list of valid symbols
+     *
+     * @param symbolsList list of valid symbols/numbers
+     * @param num         the symbol/number to be checked for
+     * @return index of symbol
+     */
     private int checkSymbolLocation(int[] symbolsList, int num) {
         for (int i = 0; i < symbolsList.length; i++) {
             if (num == symbolsList[i]) {
@@ -211,35 +188,35 @@ public class AlgorXSolver extends StdSudokuSolver {
         return 0;
     }
 
+    /**
+     * Applies Algorithm X to the matrix to solve
+     *
+     * @param matrix the exact cover matrix to solve
+     * @return true if solved
+     */
     private boolean applyAlgorithmX(int[][] matrix) {
         // Check if there are columns in matrix
         if (matrix[0].length == 1) {
-            System.out.println("SOLVED");
-            System.out.println();
             return true;
+
         } else {
             // Pick a column
             for (int col = 1; col < matrix[0].length; col++) {
-                // pick a row where [row][col] = 1;
+                // Pick a row where [row][col] = 1;
                 for (int row = 1; row < matrix.length; row++) {
                     if (matrix[row][col] == 1) {
+                        // Add to solution
                         solution.add(matrix[row][0]);
 
                         //Delete rows/cols
-                        int[][]tempMatrix = coverRowsCols(matrix, row);
-//                        printMatrix(tempMatrix);
+                        int[][] tempMatrix = coverRowsCols(matrix, row);
 
                         // Apply recursive
                         if (applyAlgorithmX(tempMatrix)) {
                             return true;
                         } else {
-//                            for (int num : solution) {
-//                                System.out.print(num + " ");
-//                            }
-//                            System.out.println();
-//                            System.out.println("Number to remove: " + matrix[row][0]);
                             // Remove last added solution if false
-                            solution.remove(solution.size()-1);
+                            solution.remove(solution.size() - 1);
                         }
                     }
                 }
@@ -249,103 +226,80 @@ public class AlgorXSolver extends StdSudokuSolver {
         }
 
         return false;
-    }
 
+    } // end of applyAlgorithmX()
+
+    /**
+     * Finds the corresponding rows/cols from given row and adds the indexes to a list
+     * Then create a new matrix from old one without the rows
+     *
+     * @param matrix exact cover matrix to delete
+     * @param row    index of row to be deleted
+     * @return the new smaller exact cover matrix
+     */
     private int[][] coverRowsCols(int[][] matrix, int row) {
-
-//        printMatrix(matrix);
-//        System.out.println();
 
         ArrayList<Integer> rowsToDelete = new ArrayList<>();
         ArrayList<Integer> colsToDelete = new ArrayList<>();
 
         int[][] newMatrix;
-        // Deleting rows/cols
 
         for (int j = 1; j < matrix[0].length; j++) {
             if (matrix[row][j] == 1) {
-                for (int i = 1; i < matrix.length ; i++) {
-//                    if (!rowToDelete.contains(matrix[i][0])) {
-                        if (matrix[i][j] == 1) {
-                            //delete row here - store row number
-                            if(!rowsToDelete.contains(matrix[i][0])) {
-                                rowsToDelete.add(matrix[i][0]);
-                            }
-//                        }
+                for (int i = 1; i < matrix.length; i++) {
+                    if (matrix[i][j] == 1) {
+                        if (!rowsToDelete.contains(matrix[i][0])) {
+                            rowsToDelete.add(matrix[i][0]);
+                        }
                     }
                 }
-                //delete col here - store col number
+                // Store column index to be deleted
                 colsToDelete.add(matrix[0][j]);
             }
         }
 
+        // Create new exact cover matrix from old one
         newMatrix = new int[matrix.length - rowsToDelete.size()][matrix[0].length - colsToDelete.size()];
-
-//        System.out.println("Matrix row Length: " + matrix.length);
-//        System.out.println("Matrix col Length: " + matrix[0].length);
-//        System.out.println("rowDeleteSize: " + rowToDelete.size());
-//        System.out.println("colDeleteSize: " + colToDelete.size());
-//
-//        System.out.println("newMatrix row length: " + newMatrix.length);
-//        System.out.println("newMatrix col length: " + newMatrix[0].length);
-
-//        for(int num : colToDelete) {
-//            System.out.print(num + " ");
-//        }
-//        System.out.println();
-//        for (int num : rowToDelete) {
-//            System.out.print(num + " ");
-//        }
-//        System.out.println();
 
         int rowCounter = 0;
         int colCounter = 0;
-
-//        printMatrix(newMatrix);
 
         for (int[] rowNum : matrix) {
             if (!rowsToDelete.contains(rowNum[0])) {
                 for (int j = 0; j < matrix[0].length; j++) {
                     if (!colsToDelete.contains(matrix[0][j])) {
-//                        System.out.println("original matrix at row " + i + " col " + j + " : " + matrix[i][j]);
                         newMatrix[rowCounter][colCounter] = rowNum[j];
                         colCounter++;
                     }
                 }
+
                 colCounter = 0;
                 rowCounter++;
-//                printMatrix(newMatrix);
             }
         }
 
-//        for (int num : colsToDelete) {
-//            System.out.print(num + " ");
-//        }
-//        System.out.println();
-
-//        printMatrix(newMatrix);
-
         return newMatrix;
-    }
+
+    } // end of coverRowsCols()
 
     /**
-     * For a sudoku of n dimension, the number of rows in the matrix will be n rows, n columns and n numbers
-     * giving n*n*n number of matrix rows. For columns there are 4 separate constraints to account for:
-     * cell (row-column), row-value, column-value and box-value hence for a sudoku of n dimensions with n rows and
-     * n columns, the number of matrix columns will be n*n*4.
+     * Create an exact cover matrix given the dimensions of the sudoku grid
+     *
+     * @return an exact cover matrix
      */
     private int[][] initialiseCoverMatrix() {
 
         // Number of rows/cols in the matrix
-        exactCoverRows = (gridDimension * gridDimension * gridDimension);
-        exactCoverCols = (gridDimension * gridDimension * 4);
+        int exactCoverRows = (gridDimension * gridDimension * gridDimension);
+        int exactCoverCols = (gridDimension * gridDimension * 4);
 
         int[][] coverMatrixTemp = new int[exactCoverRows][exactCoverCols];
 
-        cellConstraintIndex = 0;
-        rowContraintIndex = gridDimension * gridDimension;
-        colConstraintIndex = rowContraintIndex + (gridDimension * gridDimension);
-        boxConstraintIndex = colConstraintIndex + (gridDimension * gridDimension);
+        // Private int cellConstraintIndex = 0;
+        int cellConstraintIndex = 0;
+        int rowContraintIndex = gridDimension * gridDimension;
+        int colConstraintIndex = rowContraintIndex + (gridDimension * gridDimension);
+        int boxConstraintIndex = colConstraintIndex + (gridDimension * gridDimension);
 
 
         // Fill cell constraints with 1 where applicable
@@ -354,27 +308,27 @@ public class AlgorXSolver extends StdSudokuSolver {
         int colValue = colConstraintIndex;
         int boxValue = boxConstraintIndex;
 
-        for (int i = 0; i < exactCoverRows ; i++) {
+        for (int i = 0; i < exactCoverRows; i++) {
             // Cell constraints
             coverMatrixTemp[i][cellValue] = 1;
-            if ((i + 1)%gridDimension == 0) {
+            if ((i + 1) % gridDimension == 0) {
                 cellValue++;
             }
 
             // Row constraints
             coverMatrixTemp[i][rowValue] = 1;
             rowValue++;
-            if ((rowValue)%gridDimension == 0) {
+            if ((rowValue) % gridDimension == 0) {
                 rowValue = rowValue - gridDimension;
             }
-            if ((i + 1)%(gridDimension * gridDimension) == 0) {
+            if ((i + 1) % (gridDimension * gridDimension) == 0) {
                 rowValue = rowValue + gridDimension;
             }
 
             // Col constraints
             coverMatrixTemp[i][colValue] = 1;
             colValue++;
-            if ((i + 1)%(gridDimension * gridDimension) == 0) {
+            if ((i + 1) % (gridDimension * gridDimension) == 0) {
                 colValue = colConstraintIndex;
             }
 
@@ -389,7 +343,7 @@ public class AlgorXSolver extends StdSudokuSolver {
                 for (int n = 1; n <= gridDimension; n++, boxValue++) {
                     for (int rowDelta = 0; rowDelta < boxSize; rowDelta++) {
                         for (int colDelta = 0; colDelta < boxSize; colDelta++) {
-                            int index = indexInCoverMatrix(row+rowDelta, col + colDelta, n);
+                            int index = indexInCoverMatrix(row + rowDelta, col + colDelta, n);
                             coverMatrixTemp[index][boxValue] = 1;
                         }
                     }
@@ -398,12 +352,12 @@ public class AlgorXSolver extends StdSudokuSolver {
         }
 
         // Convert to matrix with coords
-        int[][] matrix = new int[exactCoverRows+1][exactCoverCols+1];
+        int[][] matrix = new int[exactCoverRows + 1][exactCoverCols + 1];
 
-        for (int j = 1; j < exactCoverCols+1 ; j++) {
+        for (int j = 1; j < exactCoverCols + 1; j++) {
             matrix[0][j] = j;
         }
-        for (int i = 0; i < exactCoverRows+1; i++) {
+        for (int i = 0; i < exactCoverRows + 1; i++) {
             matrix[i][0] = i;
         }
 
@@ -413,37 +367,36 @@ public class AlgorXSolver extends StdSudokuSolver {
 
         return matrix;
 
-        // Testing print matrix
-//        printMatrix(masterCoverMatrix);
-
     } // end of initialiseCoverMatrix()
 
+    // Method to help initialise exact cover matrix box constraints
     private int indexInCoverMatrix(int row, int col, int num) {
         return (row - 1) * gridDimension * gridDimension + (col - 1) * gridDimension + (num - 1);
     }
 
-    // For testing purposes
-    private void printMatrix(int[][] matrix) {
-
-        StringBuilder sb = new StringBuilder();
-
-        for (int i = 0; i < matrix.length; i++) {
-            for (int j = 0; j < matrix[0].length; j++) {
-                if(matrix[i][j] != 0) {
-                    sb.append(matrix[i][j]);
-                    sb.append(" ");
-
-                } else {
-                    sb.append("0 ");
-
-                }
-            }
-            sb.append("\n");
-
-        }
-
-        System.out.println(sb.toString());
-    }
+    // TODO
+//    // For testing purposes - delete before submitting!
+//    private void printMatrix(int[][] matrix) {
+//
+//        StringBuilder sb = new StringBuilder();
+//
+//        for (int i = 0; i < matrix.length; i++) {
+//            for (int j = 0; j < matrix[0].length; j++) {
+//                if (matrix[i][j] != 0) {
+//                    sb.append(matrix[i][j]);
+//                    sb.append(" ");
+//
+//                } else {
+//                    sb.append("0 ");
+//
+//                }
+//            }
+//            sb.append("\n");
+//
+//        }
+//
+//        System.out.println(sb.toString());
+//    }
 
 
 } // end of class AlgorXSolver

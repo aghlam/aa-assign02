@@ -42,6 +42,7 @@ public class StdSudokuGrid extends SudokuGrid {
     // List of instructions of the .in file
     private ArrayList<String> sudokuList;
 
+
     public StdSudokuGrid() {
         super();
         sudokuList = new ArrayList<>();
