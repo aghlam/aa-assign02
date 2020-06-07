@@ -58,6 +58,8 @@ public class AlgorXSolver extends StdSudokuSolver {
 
         coverMatrix =  applyInitialGrid(grid, masterCoverMatrix);
 
+//        coverMatrix = masterCoverMatrix;
+
 
 
         // testing - delete after
@@ -69,14 +71,80 @@ public class AlgorXSolver extends StdSudokuSolver {
         boolean temp = applyAlgorithmX(coverMatrix);
 
         // Testing - delete after
-        for (int num : solution) {
-            System.out.print(num + " ");
-        }
-        System.out.println();
+//        for (int num : solution) {
+//            System.out.print(num + " ");
+//        }
+//        System.out.println();
+
+        return applySolution(grid);
 
 
-        return false;
+//        return false;
     } // end of solve()
+
+    private boolean applySolution(SudokuGrid sudokuGrid) {
+
+        // Coordinates of the solution
+        ArrayList<int[]> solutionCoords = new ArrayList<>();
+        int counter = 0;
+
+        // Setup for columns
+        int[] colLocationList = new int[gridDimension*gridDimension];
+        int location = 0;
+
+        for (int i = 1; i <= colLocationList.length; i++) {
+            colLocationList[i-1] = location;
+            if (i%gridDimension == 0) {
+                location++;
+            }
+        }
+
+
+        for (int row : solution) {
+
+            int[] coords = new int[3];
+
+            // Get row index
+            for (int i = 1; i <= gridDimension; i++) {
+                if (row <= i * gridDimension * gridDimension) {
+                    coords[0] = i-1;
+                    counter++;
+                    break;
+                }
+            }
+
+            // Get col index
+            if(row%(gridDimension*gridDimension) == 0) {
+                coords[1] = gridDimension - 1;
+            } else {
+                coords[1] = colLocationList[row%(gridDimension*gridDimension)-1];
+
+            }
+
+            // Get value
+            if (row%gridDimension == 0) {
+                coords[2] = gridDimension;
+            } else {
+                coords[2] = row%gridDimension;
+            }
+
+
+            solutionCoords.add(coords);
+
+        }
+
+        try {
+            for (int[] coords : solutionCoords) {
+                System.out.println(coords[0] + "," + coords[1] + " " + coords[2]);
+                sudokuGrid.setGridLoc(coords[0], coords[1], coords[2]);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        return true;
+    }
 
     private int[][] applyInitialGrid(SudokuGrid sudokuGrid, int[][] matrix) {
 
@@ -98,9 +166,9 @@ public class AlgorXSolver extends StdSudokuSolver {
             // Calculate row in cover matrix according to coordinates and value
             int rowIndex = (Integer.parseInt(coords[0])*gridDimension*gridDimension) + (Integer.parseInt(coords[1])*gridDimension) + value;
 
-            System.out.println("Index row number: " + rowIndex);
+//            System.out.println("Index row number: " + rowIndex);
 
-            System.out.println(matrix[rowIndex][0]);
+//            System.out.println(matrix[rowIndex][0]);
 
             solution.add(matrix[rowIndex][0]);
 
@@ -112,9 +180,7 @@ public class AlgorXSolver extends StdSudokuSolver {
                 if (num == newMatrix[i][0]) {
                     newMatrix = coverRowsCols(newMatrix, i);
                 }
-
             }
-
         }
 
 //        printMatrix(newMatrix);
@@ -149,6 +215,7 @@ public class AlgorXSolver extends StdSudokuSolver {
         // Check if there are columns in matrix
         if (matrix[0].length == 1) {
             System.out.println("SOLVED");
+            System.out.println();
             return true;
         } else {
             // Pick a column
@@ -250,6 +317,11 @@ public class AlgorXSolver extends StdSudokuSolver {
 //                printMatrix(newMatrix);
             }
         }
+
+//        for (int num : colsToDelete) {
+//            System.out.print(num + " ");
+//        }
+//        System.out.println();
 
 //        printMatrix(newMatrix);
 
