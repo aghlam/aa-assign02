@@ -66,11 +66,6 @@ public abstract class SudokuGrid {
      * Methods added to the base SudokuGrid abstract class
      */
 
-    /**
-     * Returns the variable containing the grid layout
-     *
-     * @return the 2d array grid
-     */
     public abstract int getGridLoc(int i, int j);
 
     public abstract void setGridLoc(int i, int j, int num);
@@ -81,9 +76,7 @@ public abstract class SudokuGrid {
 
     public abstract ArrayList<String> getSudokuList();
 
-//    public abstract boolean validate(int i, int j, int num);
     // For Killer Sudoku
-
     public abstract ArrayList<String[]> getCageList();
 
 } // end of abstract class SudokuGrid

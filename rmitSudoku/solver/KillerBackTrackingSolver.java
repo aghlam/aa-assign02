@@ -19,6 +19,10 @@ public class KillerBackTrackingSolver extends KillerSudokuSolver {
     private int gridDimension;
     int[] validSymbolsList;
 
+
+    /**
+     * Constructor
+     */
     public KillerBackTrackingSolver() {
 
     } // end of KillerBackTrackingSolver()
@@ -35,6 +39,12 @@ public class KillerBackTrackingSolver extends KillerSudokuSolver {
 
     } // end of solve()
 
+    /**
+     * Recursive backtracking method to solve sudoku grid by validating the constraints
+     *
+     * @param sudokuGrid grid to be solved
+     * @return true if solved
+     */
     private boolean backtrackingKiller(SudokuGrid sudokuGrid) {
 
         for (int i = 0; i < gridDimension; i++) {
@@ -59,20 +69,30 @@ public class KillerBackTrackingSolver extends KillerSudokuSolver {
         return true;
     }
 
+    /**
+     * Validates the usual constraints but also has a cage constraint to check
+     *
+     * @param i          row index to be validated
+     * @param j          column index to be validated
+     * @param num        symbol/number to be input
+     * @param sudokuGrid sudoku grid to be solved
+     * @return return true if passes all validations
+     */
     private boolean validate(int i, int j, int num, SudokuGrid sudokuGrid) {
 
-//        if (!rowCheck(i, num, sudokuGrid) && !columnCheck(j, num, sudokuGrid) && !boxCheck(i, j, num, sudokuGrid)) {
-//            if (cageCheck(i, j, num, sudokuGrid)) {
-//                return true;
-//            }
-//        }
-//        return false;
-
-        return !rowCheck(i, num, sudokuGrid) && !columnCheck(j, num, sudokuGrid) && !boxCheck(i, j, num, sudokuGrid) && cageCheck(i, j, num, sudokuGrid);
+        return !rowCheck(i, num, sudokuGrid) && !columnCheck(j, num, sudokuGrid)
+                && !boxCheck(i, j, num, sudokuGrid) && cageCheck(i, j, num, sudokuGrid);
 
     } // end of validate(int i, int j, int num)
 
-    // Alternative row check
+    /**
+     * Validates the row at index i
+     *
+     * @param i          row index to be checked
+     * @param num        the symbol/number to be placed
+     * @param sudokuGrid grid to be solved
+     * @return true if can be placed
+     */
     private boolean rowCheck(int i, int num, SudokuGrid sudokuGrid) {
         for (int j = 0; j < gridDimension; j++) {
             if (sudokuGrid.getGridLoc(i, j) == num) {
@@ -81,10 +101,17 @@ public class KillerBackTrackingSolver extends KillerSudokuSolver {
         }
 
         return false;
+
     } // end of rowCheck()
 
-
-    // Alternative column check
+    /**
+     * Validates the column at index j
+     *
+     * @param j          column index to be checked
+     * @param num        the symbol/number to be placed
+     * @param sudokuGrid grid to be solved
+     * @return true if can be placed
+     */
     private boolean columnCheck(int j, int num, SudokuGrid sudokuGrid) {
         for (int i = 0; i < gridDimension; i++) {
             if (sudokuGrid.getGridLoc(i, j) == num) {
@@ -93,11 +120,22 @@ public class KillerBackTrackingSolver extends KillerSudokuSolver {
         }
 
         return false;
+
     } // end of columnCheck()
 
-
-    // Alternative box check
+    /**
+     * Validates the box constraints for placing a number. This was harder to figure out. Idea and concepts
+     * were learnt from:
+     * Reference: https://medium.com/@george.seif94/solving-sudoku-using-a-simple-search-algorithm-3ac44857fee8
+     *
+     * @param rowStart   row index of where the box starts
+     * @param colStart   column index of where box starts
+     * @param num        the symbol/number to be placed
+     * @param sudokuGrid grid to be solved
+     * @return true if can be placed
+     */
     private boolean boxCheck(int rowStart, int colStart, int num, SudokuGrid sudokuGrid) {
+
         int squareRoot = (int) Math.sqrt(gridDimension);
         int row = rowStart - rowStart % squareRoot;
         int col = colStart - colStart % squareRoot;
@@ -111,21 +149,27 @@ public class KillerBackTrackingSolver extends KillerSudokuSolver {
         }
 
         return false;
+
     } // end of boxCheck()
 
-
-    //
+    /**
+     * The main check for the killer sudoku. Once all coordinates of a given cage is filled,
+     * it adds up all the symbols/numbers and checks it against the give cage total
+     *
+     * @param row        row index of where the box starts
+     * @param col        column index of where box starts
+     * @param num        the symbol/number to be placed
+     * @param sudokuGrid grid to be solved
+     * @return true if cage total and sum total match
+     */
     private boolean cageCheck(int row, int col, int num, SudokuGrid sudokuGrid) {
         // Cycle through all cages in list
-//        for (int i = 0; i < cageNo; i++) {
         for (String[] currentCage : cageList) {
-            // Get cage at i
-//            String[] currentCage = cageList.get(i);
             // Get total for cage at i
             int currentCageTotal = Integer.parseInt(currentCage[0]);
             // Get number of elements in cage at i
             int currentCageLength = currentCage.length;
-            /**
+            /*
              * Obtain the coords of the last element in cage at i
              * Given that the input file is structured in the correct format, the last
              * element in the cage will the the last coordinate to be filled which will
@@ -139,17 +183,12 @@ public class KillerBackTrackingSolver extends KillerSudokuSolver {
                     String[] tempCoords = currentCage[j].split(",");
                     coordsTotal += sudokuGrid.getGridLoc(Integer.parseInt(tempCoords[0]), Integer.parseInt(tempCoords[1]));
                 }
-                if (coordsTotal == currentCageTotal) {
-                    return true;
-                } else {
-                    return false;
-                }
-
+                return coordsTotal == currentCageTotal;
             }
-
         }
 
         return true;
+
     } // end of cageCheck()
 
 

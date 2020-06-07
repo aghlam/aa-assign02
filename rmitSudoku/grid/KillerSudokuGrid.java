@@ -29,12 +29,13 @@ public class KillerSudokuGrid extends SudokuGrid {
 
     // List to hold cage instructions
     private final ArrayList<String[]> cageList;
-    private int cageNo;
 
-
+    /**
+     * Constructor
+     */
     public KillerSudokuGrid() {
-        super();
 
+        super();
         cageList = new ArrayList<>();
 
     } // end of KillerSudokuGrid()
@@ -48,18 +49,15 @@ public class KillerSudokuGrid extends SudokuGrid {
         return sudokuGrid[i][j];
     }
 
-
     @Override
     public void setGridLoc(int i, int j, int num) {
         sudokuGrid[i][j] = num;
     }
 
-
     @Override
     public int[] getValidSymbolsList() {
         return validSymbolsList;
     }
-
 
     @Override
     public int getGridDimension() {
@@ -102,11 +100,6 @@ public class KillerSudokuGrid extends SudokuGrid {
         gridDimension = Integer.parseInt(sudokuList.get(0));
         // Initialise sudoku grid/array to all zeroes
         sudokuGrid = new int[gridDimension][gridDimension];
-//        for (int i = 0; i < gridDimension; i++) {
-//            for (int j = 0; j < gridDimension; j++) {
-//                sudokuGrid[i][j] = 0;
-//            }
-//        }
 
         // Assign list of valid symbols
         String[] validSymbols = sudokuList.get(1).split(" ");
@@ -117,7 +110,7 @@ public class KillerSudokuGrid extends SudokuGrid {
         }
 
         // Read in number of cages
-        cageNo = Integer.parseInt(sudokuList.get(2));
+        int cageNo = Integer.parseInt(sudokuList.get(2));
 
         for (int i = 3; i < 3 + cageNo; i++) {
             String[] temp = sudokuList.get(i).split(" ");
@@ -161,6 +154,7 @@ public class KillerSudokuGrid extends SudokuGrid {
 
     @Override
     public boolean validate() {
+
         if (!oneValueConstraintCheck()) {
             return false;
         } else if (!rowConstraintCheck()) {
@@ -174,8 +168,11 @@ public class KillerSudokuGrid extends SudokuGrid {
 
     } // end of validate()
 
-
-    // Checks for the 'One value per cell' constraint
+    /**
+     * Checks if cell contains a value
+     *
+     * @return true if validated
+     */
     private boolean oneValueConstraintCheck() {
 
         for (int i = 0; i < gridDimension; i++) {
@@ -185,61 +182,72 @@ public class KillerSudokuGrid extends SudokuGrid {
                 }
             }
         }
-        return true;
-    } // end of oneValueConstraintCheck()
 
+        return true;
+
+    } // end of oneValueConstraintCheck()
 
     /**
      * Checks for if rows contain a unique value
-     * Works in conjunction with columnConstraint()
      * Consider arithmetic, all unique values will add up to a certain number.
      * Even if a row has repeat numbers to add up to the total, it will fail the column
      * check since the columns will contain repeat numbers.
+     *
+     * @return true if validated
      */
     private boolean rowConstraintCheck() {
 
         for (int i = 0; i < gridDimension; i++) {
             int sum = 0;
+
             for (int j = 0; j < gridDimension; j++) {
                 sum += sudokuGrid[i][j];
             }
-//            System.out.println(sum);
+
             if (sum != validSymbolsTotal) {
                 return false;
             }
         }
-        return true;
-    } // end of rowConstraintCheck()
 
+        return true;
+
+    } // end of rowConstraintCheck()
 
     /**
      * Checks for if columns contain a unique value
-     * Works in conjunction with rowConstraint()
      * Consider arithmetic, all unique values will add up to a certain number.
      * Even if a column has repeat numbers to add up to the total, it will fail the row
      * check since the rows will contain repeat numbers.
+     *
+     * @return true if validated
      */
     private boolean columnConstraintCheck() {
 
         for (int j = 0; j < gridDimension; j++) {
             int sum = 0;
+
             for (int i = 0; i < gridDimension; i++) {
                 sum += sudokuGrid[i][j];
             }
-//            System.out.println(sum);
+
             if (sum != validSymbolsTotal) {
                 return false;
             }
         }
+
         return true;
     }
 
-
-    // Checks box for unique values
+    /**
+     * Checks for box contains unique numbers
+     * Consider arithmetic, all unique values will add up to a certain number.
+     *
+     * @return true if validated
+     */
     private boolean boxConstraintCheck() {
         int squareRoot = (int) Math.sqrt(gridDimension);
 
-        // defines which block to check
+        // Defines which block to check
         for (int i = 0; i < gridDimension; i += squareRoot) {
             for (int j = 0; j < gridDimension; j += squareRoot) {
 
@@ -252,16 +260,15 @@ public class KillerSudokuGrid extends SudokuGrid {
                         subGridTotal += sudokuGrid[k][l];
                     }
                 } // end inner double for loop
-//                System.out.println(subGridTotal);
                 if (subGridTotal != validSymbolsTotal) {
                     return false;
                 }
-
             }
         } // end outer double for loop
 
         return true;
-    }
+
+    } // end of boxConstraintCheck()
 
 
 } // end of class KillerSudokuGrid
