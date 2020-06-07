@@ -39,9 +39,12 @@ public class StdSudokuGrid extends SudokuGrid {
     private int[] validSymbolsList;
     private int validSymbolsTotal;
 
+    // List of instructions of the .in file
+    private ArrayList<String> sudokuList;
 
     public StdSudokuGrid() {
         super();
+        sudokuList = new ArrayList<>();
     } // end of StdSudokuGrid()
 
 
@@ -77,13 +80,18 @@ public class StdSudokuGrid extends SudokuGrid {
         return null;
     }
 
+    @Override
+    public ArrayList<String> getSudokuList() {
+        return sudokuList;
+    }
+
     /* ********************************************************* */
 
     @Override
     public void initGrid(String filename)
             throws FileNotFoundException, IOException {
 
-        ArrayList<String> sudokuList = new ArrayList<>();
+
 
 
         // Open file and read each line using BufferedReader

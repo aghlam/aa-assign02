@@ -67,6 +67,11 @@ public class KillerSudokuGrid extends SudokuGrid {
     }
 
     @Override
+    public ArrayList<String> getSudokuList() {
+        return null;
+    }
+
+    @Override
     public ArrayList<String[]> getCageList() {
         return cageList;
     }
@@ -156,7 +161,6 @@ public class KillerSudokuGrid extends SudokuGrid {
 
     @Override
     public boolean validate() {
-        // TODO
         if (!oneValueConstraintCheck()) {
             return false;
         } else if (!rowConstraintCheck()) {

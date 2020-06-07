@@ -79,9 +79,11 @@ public abstract class SudokuGrid {
 
     public abstract int getGridDimension();
 
-//    public abstract boolean validate(int i, int j, int num);
+    public abstract ArrayList<String> getSudokuList();
 
+//    public abstract boolean validate(int i, int j, int num);
     // For Killer Sudoku
+
     public abstract ArrayList<String[]> getCageList();
 
 } // end of abstract class SudokuGrid
