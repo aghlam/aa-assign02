@@ -39,6 +39,7 @@ public class KillerBackTrackingSolver extends KillerSudokuSolver {
 
     } // end of solve()
 
+
     /**
      * Recursive backtracking method to solve sudoku grid by validating the constraints
      *
@@ -69,6 +70,7 @@ public class KillerBackTrackingSolver extends KillerSudokuSolver {
         return true;
     }
 
+
     /**
      * Validates the usual constraints but also has a cage constraint to check
      *
@@ -84,6 +86,7 @@ public class KillerBackTrackingSolver extends KillerSudokuSolver {
                 && !boxCheck(i, j, num, sudokuGrid) && cageCheck(i, j, num, sudokuGrid);
 
     } // end of validate(int i, int j, int num)
+
 
     /**
      * Validates the row at index i
@@ -104,6 +107,7 @@ public class KillerBackTrackingSolver extends KillerSudokuSolver {
 
     } // end of rowCheck()
 
+
     /**
      * Validates the column at index j
      *
@@ -122,6 +126,7 @@ public class KillerBackTrackingSolver extends KillerSudokuSolver {
         return false;
 
     } // end of columnCheck()
+
 
     /**
      * Validates the box constraints for placing a number. This was harder to figure out. Idea and concepts
@@ -151,6 +156,7 @@ public class KillerBackTrackingSolver extends KillerSudokuSolver {
         return false;
 
     } // end of boxCheck()
+
 
     /**
      * The main check for the killer sudoku. Once all coordinates of a given cage is filled,

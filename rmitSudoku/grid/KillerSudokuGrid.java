@@ -26,9 +26,9 @@ public class KillerSudokuGrid extends SudokuGrid {
     private int[] validSymbolsList;
     private int validSymbolsTotal;
 
-
     // List to hold cage instructions
     private final ArrayList<String[]> cageList;
+
 
     /**
      * Constructor
@@ -119,6 +119,7 @@ public class KillerSudokuGrid extends SudokuGrid {
 
     } // end of initBoard()
 
+
     @Override
     public void outputGrid(String filename)
             throws FileNotFoundException, IOException {
@@ -131,6 +132,7 @@ public class KillerSudokuGrid extends SudokuGrid {
         writer.close();
 
     } // end of outputBoard()
+
 
     @Override
     public String toString() {
@@ -152,6 +154,7 @@ public class KillerSudokuGrid extends SudokuGrid {
 
     } // end of toString()
 
+
     @Override
     public boolean validate() {
 
@@ -167,6 +170,7 @@ public class KillerSudokuGrid extends SudokuGrid {
         }
 
     } // end of validate()
+
 
     /**
      * Checks if cell contains a value
@@ -186,6 +190,7 @@ public class KillerSudokuGrid extends SudokuGrid {
         return true;
 
     } // end of oneValueConstraintCheck()
+
 
     /**
      * Checks for if rows contain a unique value
@@ -213,6 +218,7 @@ public class KillerSudokuGrid extends SudokuGrid {
 
     } // end of rowConstraintCheck()
 
+
     /**
      * Checks for if columns contain a unique value
      * Consider arithmetic, all unique values will add up to a certain number.
@@ -237,6 +243,7 @@ public class KillerSudokuGrid extends SudokuGrid {
 
         return true;
     }
+
 
     /**
      * Checks for box contains unique numbers

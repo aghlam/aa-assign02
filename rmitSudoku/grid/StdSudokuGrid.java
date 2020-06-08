@@ -7,6 +7,7 @@ package grid;
 import java.io.*;
 import java.util.ArrayList;
 
+
 /**
  * Class implementing the grid for standard Sudoku.
  * Extends SudokuGrid (hence implements all abstract methods in that abstract
@@ -33,6 +34,7 @@ public class StdSudokuGrid extends SudokuGrid {
 
     // List of instructions of the .in file
     private ArrayList<String> sudokuList;
+
 
     /**
      * Constructor
@@ -136,6 +138,7 @@ public class StdSudokuGrid extends SudokuGrid {
 
     } // end of initGrid()
 
+
     @Override
     public void outputGrid(String filename)
             throws FileNotFoundException, IOException {
@@ -148,6 +151,7 @@ public class StdSudokuGrid extends SudokuGrid {
         writer.close();
 
     } // end of outputGrid()
+
 
     @Override
     public String toString() {
@@ -169,6 +173,7 @@ public class StdSudokuGrid extends SudokuGrid {
 
     } // end of toString()
 
+
     @Override
     public boolean validate() {
 
@@ -184,6 +189,7 @@ public class StdSudokuGrid extends SudokuGrid {
         }
 
     } // end of validate()
+
 
     /**
      * Checks if cell contains a value
@@ -203,6 +209,7 @@ public class StdSudokuGrid extends SudokuGrid {
         return true;
 
     } // end of oneValueConstraintCheck()
+
 
     /**
      * Checks for if rows contain a unique value
@@ -229,6 +236,7 @@ public class StdSudokuGrid extends SudokuGrid {
         return true;
     } // end of rowConstraintCheck()
 
+
     /**
      * Checks for if columns contain a unique value
      * Consider arithmetic, all unique values will add up to a certain number.
@@ -254,6 +262,7 @@ public class StdSudokuGrid extends SudokuGrid {
         return true;
 
     } // end of columnConstraintCheck()
+
 
     /**
      * Checks for box contains unique numbers

@@ -25,12 +25,6 @@ public class BackTrackingSolver extends StdSudokuSolver {
     } // end of BackTrackingSolver()
 
 
-    /**
-     * Solve the given sudoku grid
-     *
-     * @param grid Input grid to solve.  The solver will write the solution to grid.
-     * @return true if solved
-     */
     @Override
     public boolean solve(SudokuGrid grid) {
 
@@ -40,6 +34,7 @@ public class BackTrackingSolver extends StdSudokuSolver {
         return (backtrackingRecursion(grid));
 
     } // end of solve()
+
 
     /**
      * Uses a backtracking recursion and validation methods to solve the sudoku grid. The idea
@@ -73,6 +68,7 @@ public class BackTrackingSolver extends StdSudokuSolver {
         return true;
     }
 
+
     /**
      * Validates if the number can be placed in at the i, j coordinates of the grid
      *
@@ -85,6 +81,7 @@ public class BackTrackingSolver extends StdSudokuSolver {
     private boolean check(int i, int j, int num, SudokuGrid sudokuGrid) {
         return !rowCheck(i, num, sudokuGrid) && !columnCheck(j, num, sudokuGrid) && !boxCheck(i, j, num, sudokuGrid);
     } // end of validate(int i, int j, int num)
+
 
     /**
      * Validates the row at index i
@@ -104,6 +101,7 @@ public class BackTrackingSolver extends StdSudokuSolver {
         return false;
     } // end of rowCheck()
 
+
     /**
      * Validates the column at index j
      *
@@ -121,6 +119,7 @@ public class BackTrackingSolver extends StdSudokuSolver {
 
         return false;
     } // end of columnCheck()
+
 
     /**
      * Validates the box constraints for placing a number. This was harder to figure out. Idea and concepts
